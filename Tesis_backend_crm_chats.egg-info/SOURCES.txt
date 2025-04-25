@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+./core/__init__.py
+./core/asgi.py
+./core/settings.py
+./core/urls.py
+./core/wsgi.py
+Tesis_backend_crm_chats.egg-info/PKG-INFO
+Tesis_backend_crm_chats.egg-info/SOURCES.txt
+Tesis_backend_crm_chats.egg-info/dependency_links.txt
+Tesis_backend_crm_chats.egg-info/requires.txt
+Tesis_backend_crm_chats.egg-info/top_level.txt
