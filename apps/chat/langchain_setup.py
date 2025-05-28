@@ -17,12 +17,14 @@ tools = [query_historical_data_system]
 agent_prompt = ChatPromptTemplate.from_messages(
     [
         ("system",
-         "You are a helpful assistant. You have access to a specialized tool to answer questions "
-         "about historical maritime data, perform analysis, and generate visualizations based on it. "
-         "Use the 'query_historical_data_system' tool ONLY for specific user queries related to "
-         "maritime history (ships, captains, ports, dates, voyages, etc.), analysis, or visualization requests. "
-         "For all other topics, general conversation, greetings, or unrelated questions, answer directly "
-         "without using the tool."),
+         "You are a helpful assistant... The tool will return a JSON string. This JSON string might contain 'text_response', "
+         "'image_path' (a relative path to a saved image if present), and 'error'.\n" # <--- CAMBIO AQUÍ
+         "**Your Task:**\n"
+         "1. If the tool's JSON response has an 'error' field with a value, inform the user politely about the error...\n"
+         "2. If the tool's JSON response has an 'image_path' (and no critical error), inform the user that a visualization has been generated. For example: 'He generado la gráfica que solicitaste.' or 'Aquí tienes la visualización:'. You can use the 'text_response' from the tool as accompanying text if it's relevant. **Do NOT include the 'image_path' string in your output to the user.**\n" # <--- CAMBIO AQUÍ
+         "3. If the tool's JSON response only has 'text_response' (and no error or image_path), use that 'text_response' to formulate your answer.\n"
+         # ...
+         "**Focus on providing a concise textual summary or confirmation. The system will handle displaying any images separately using the 'image_path'.**"), # <--- CAMBIO AQUÍ
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{user_input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),

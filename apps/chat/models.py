@@ -2,21 +2,29 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _ 
 from apps.utils.models import BaseModel
 from apps.utils.enums import RolType
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
 class Chat(BaseModel):
 
-    title = models.CharField(_("Title"), max_length=255, null=True, blank=True, default=_("New Chat"),
-                                help_text=_("Title of the chat room"),
-                            )
+    title = models.CharField(
+        _("Title"),
+        max_length=255,
+        null=True,  # Permite que el título sea NULL en la BD
+        blank=True, # Permite que el título esté vacío en formularios/admin
+        # default=_("New Chat"), # <--- ELIMINA O COMENTA ESTA LÍNEA
+        help_text=_("Title of the chat room"),
+    )
     description = models.TextField(_("Description"), help_text=_("Description of the chat room"),
                                     null=True, blank=True,
                                 )
-    registered_by = models.ForeignKey(User, verbose_name=_("Created By"), on_delete=models.CASCADE,
-                                        related_name="registered_chats",
-                                    )
+    registered_by = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("Created By"),
+        on_delete=models.CASCADE,
+        related_name="registered_chats",
+    )
 
     class Meta:
         verbose_name = _("Chat")
@@ -30,17 +38,24 @@ class Chat(BaseModel):
 
 class Message(BaseModel):
 
-    text_message = models.TextField(_("Text Message"), help_text=_("Text message of the chat"),
-                                    null=False, blank=False,
-                                )
+    text_message = models.TextField(
+        _("Text Message"), 
+        help_text=_("Text message of the chat"),
+        null=False, 
+        blank=False,
+        )
     chat_room = models.ForeignKey(Chat, verbose_name=_("Chat Room"), on_delete=models.CASCADE,
                                     help_text=_("Chat room where the message was created"),
                                     related_name="chat_messages", null=False, blank=False
                                 )
     rol = models.CharField(_("Rol"), max_length=50, help_text=_("Message Rol"), choices=RolType.choices,)
-    image = models.ImageField(_("Image"), upload_to="chat_images/", null=True, blank=True,
-                                help_text=_("Image of the message"),
-                            )
+    image = models.CharField(
+        _("Image Path"),
+        max_length=255, # O una longitud adecuada para rutas
+        null=True,
+        blank=True,
+        help_text=_("Relative path to the image file"),
+    )
     weight = models.IntegerField(_("Weight"), help_text=_("Weight of the message"), null=True, blank=True,
                                     default=1,   
                                 )
@@ -53,10 +68,10 @@ class Message(BaseModel):
     def __str__(self):
         return str(_(f"Created Message with uid {self.uid}"))
 
-    def update_weight(self, is_like):
-        if is_like == "True":
+    def update_weight(self, is_like: bool): # Puedes añadir type hint
+        if is_like is True: # O simplemente 'if is_like:'
             self.weight = 2
-        else:
+        else: # is_like es False
             self.weight = 0
         self.save()
 

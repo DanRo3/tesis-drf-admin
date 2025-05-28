@@ -95,7 +95,7 @@ class Formatted_Messages_Manager:
 
 
 class GPT_Response_Manager:
-    """ Class that is responsible for returning the Openai GPT response. """
+    """ Class that is responsible for returning the LLM response. """
     image_service = GenerateImageTool()
     tools_list = [
         {
