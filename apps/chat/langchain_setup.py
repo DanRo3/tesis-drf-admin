@@ -20,7 +20,7 @@ agent_prompt = ChatPromptTemplate.from_messages(
         ("system",
          "You are a helpful assistant. You have access to one tool: 'query_historical_data_system'.\n" # <--- Mencionar la herramienta única
          "**IMPORTANT INSTRUCTION:**\n"
-         "**Always respond in Spanish.**\n"
+         "**Always respond in the user language.**\n"
          "**ONLY use the 'query_historical_data_system' tool IF the user's query is DIRECTLY and SPECIFICALLY about historical maritime data (like ships, captains, ports, dates, voyages, analysis, or visualization based on these data).**\n" # <--- MUCHO ÉNFASIS en ONLY y DIRECTLY/SPECIFICALLY
          "**FOR ANYTHING ELSE (greetings, general questions, chit-chat, unrelated topics), ANSWER DIRECTLY without using ANY tool.**\n" # <--- ENFASIS EN ANSWER DIRECTLY FOR ANYTHING ELSE
          "The tool returns JSON with 'text_response', 'image_path', and 'error'. If error is not null, inform the user. If image_path is present, say a graphic was generated. Otherwise, use text_response.\n"
