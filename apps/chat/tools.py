@@ -81,7 +81,7 @@ def query_historical_data_system(user_query: str) -> str:
 
 
                         # --- ¡ASIGNAR LA RUTA GUARDADA A LA RESPUESTA FINAL! ---
-                        final_mas_response["image_path"] = saved_file_path # <--- ¡CORREGIDO AQUÍ!
+                        final_mas_response["image_path"] = "http://localhost:8000/media/"+saved_file_path # <--- ¡CORREGIDO AQUÍ!
 
                         # Ajustar text_response si solo era un mensaje genérico de "gráfico generado" del MAS
                         if not final_mas_response["text_response"] or "visualizaci" in final_mas_response["text_response"].lower():

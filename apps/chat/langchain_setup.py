@@ -34,7 +34,7 @@ agent_prompt = ChatPromptTemplate.from_messages(
 
 # Creación del Agente y Ejecutor (Igual que antes)
 agent = create_openai_tools_agent(llm, tools, agent_prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True,return_intermediate_steps=True)
 
 def load_langchain_history_from_db(chat):
     """

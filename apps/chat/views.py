@@ -239,6 +239,11 @@ class MessageCreateAV(APIView):
             try:
                 logger.info(f"Invoking agent_executor for chat {chat.uid}...")
                 result = agent_executor.invoke(agent_input_data)
+                logger.debug(f"Full agent_executor result: {result}")
+                if "intermediate_steps" in result:
+                    logger.debug(f"Intermediate steps: {result['intermediate_steps']}")
+                else:
+                    logger.warning("No 'intermediate_steps' found in agent_executor result.")
                 logger.info(f"Agent invocation complete for chat {chat.uid}.")
             except NotImplementedError: # Langchain dummy function
                  logger.error("LangChain agent_executor not implemented.", exc_info=True)

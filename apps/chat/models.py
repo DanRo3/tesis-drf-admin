@@ -53,7 +53,7 @@ class Message(BaseModel):
     rol = models.CharField(_("Rol"), max_length=50, help_text=_("Message Rol"), choices=RolType.choices,)
     image = models.CharField(
         _("Image Path"),
-        max_length=255, # O una longitud adecuada para rutas
+        max_length=1024, # O una longitud adecuada para rutas
         null=True,
         blank=True,
         help_text=_("Relative path to the image file"),
