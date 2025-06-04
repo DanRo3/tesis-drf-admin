@@ -1,3 +1,4 @@
+#apps/chat/serializers.py
 from rest_framework import serializers
 from .models import Chat, Message
 from apps.utils.serializers import AbstractBaseSerializer

@@ -1,3 +1,4 @@
+#apps/chat/langchain_setup.py
 from apps.chat.tools import query_historical_data_system
 from langchain_openai import ChatOpenAI
 from django.conf import settings
@@ -7,7 +8,7 @@ from langchain.agents import AgentExecutor
 from apps.chat.models import Message
 from langchain.schema import AIMessage, HumanMessage
 # LLM (el mismo que antes)
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7, api_key=settings.API_KEY_OPEN_AI)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3, api_key=settings.API_KEY_OPEN_AI)
 
 # Lista de herramientas - ¡Ahora solo incluye la herramienta del MAS!
 tools = [query_historical_data_system]
@@ -17,14 +18,13 @@ tools = [query_historical_data_system]
 agent_prompt = ChatPromptTemplate.from_messages(
     [
         ("system",
-         "You are a helpful assistant... The tool will return a JSON string. This JSON string might contain 'text_response', "
-         "'image_path' (a relative path to a saved image if present), and 'error'.\n" # <--- CAMBIO AQUÍ
-         "**Your Task:**\n"
-         "1. If the tool's JSON response has an 'error' field with a value, inform the user politely about the error...\n"
-         "2. If the tool's JSON response has an 'image_path' (and no critical error), inform the user that a visualization has been generated. For example: 'He generado la gráfica que solicitaste.' or 'Aquí tienes la visualización:'. You can use the 'text_response' from the tool as accompanying text if it's relevant. **Do NOT include the 'image_path' string in your output to the user.**\n" # <--- CAMBIO AQUÍ
-         "3. If the tool's JSON response only has 'text_response' (and no error or image_path), use that 'text_response' to formulate your answer.\n"
-         # ...
-         "**Focus on providing a concise textual summary or confirmation. The system will handle displaying any images separately using the 'image_path'.**"), # <--- CAMBIO AQUÍ
+         "You are a helpful assistant. You have access to one tool: 'query_historical_data_system'.\n" # <--- Mencionar la herramienta única
+         "**IMPORTANT INSTRUCTION:**\n"
+         "**ONLY use the 'query_historical_data_system' tool IF the user's query is DIRECTLY and SPECIFICALLY about historical maritime data (like ships, captains, ports, dates, voyages, analysis, or visualization based on these data).**\n" # <--- MUCHO ÉNFASIS en ONLY y DIRECTLY/SPECIFICALLY
+         "**FOR ANYTHING ELSE (greetings, general questions, chit-chat, unrelated topics), ANSWER DIRECTLY without using ANY tool.**\n" # <--- ENFASIS EN ANSWER DIRECTLY FOR ANYTHING ELSE
+         "The tool returns JSON with 'text_response', 'image_path', and 'error'. If error is not null, inform the user. If image_path is present, say a graphic was generated. Otherwise, use text_response.\n"
+         "Your response should be concise and user-friendly.\n"
+         ),
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{user_input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),
