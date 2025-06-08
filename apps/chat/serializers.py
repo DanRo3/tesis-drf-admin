@@ -1,7 +1,8 @@
+#apps/chat/serializers.py
 from rest_framework import serializers
 from .models import Chat, Message
 from apps.utils.serializers import AbstractBaseSerializer
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 class MessageSerializer(AbstractBaseSerializer):
     chat_room = serializers.PrimaryKeyRelatedField(queryset=Chat.objects.all(), required=False)
@@ -22,7 +23,7 @@ class MessageSerializer(AbstractBaseSerializer):
 
 
 class ChatSerializer(AbstractBaseSerializer):
-    registered_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    registered_by = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), required=False)
     registered_by_username = serializers.CharField(source="registered_by.username", required=False)
     
     class Meta:
@@ -40,7 +41,7 @@ class ChatSerializer(AbstractBaseSerializer):
         return representation
     
 class ChatDetailSerializer(AbstractBaseSerializer):
-    registered_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    registered_by = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all(), required=False)
     registered_by_username = serializers.CharField(source="registered_by.username", required=False)
     chat_messages = MessageSerializer(many=True, read_only=True)
     

@@ -33,6 +33,55 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False, # Importante para no silenciar loggers de Django/libs
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG', # Muestra DEBUG e INFO en consola
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        # Opcional: Handler para escribir a un archivo
+        # 'file': {
+        #     'level': 'INFO',
+        #     'class': 'logging.FileHandler',
+        #     'filename': 'django_debug.log',
+        #     'formatter': 'verbose',
+        # },
+    },
+    'root': { # Captura todos los logs
+        'handlers': ['console'], # Añade 'file' si lo configuraste
+        'level': 'INFO', # Nivel general para root
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'), # Nivel para logs de Django
+            'propagate': False, # No pasar a root si ya se manejó
+        },
+        'apps': { # Para los loggers de tus apps (ej. logger = logging.getLogger(__name__))
+            'handlers': ['console'],
+            'level': 'DEBUG', # Muestra tus logs DEBUG de apps.chat, etc.
+            'propagate': True,
+        },
+        'pandasai': { # Para ver logs de PandasAI
+            'handlers': ['console'],
+            'level': 'INFO', # O DEBUG si necesitas más detalle
+            'propagate': False,
+        }
+    },
+}
 
 # Application definition
 
@@ -46,8 +95,8 @@ BASE_APPS = [
 ]
 
 PROJECT_APPS = [
-    'apps.chat',
-    'apps.utils',
+    'apps.chat.apps.ChatConfig',  # <--- CAMBIO AQUÍ: Usa la ruta completa a AppConfig
+    'apps.utils.apps.UtilsConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -135,7 +184,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_collected') # <--- AÑADE ESTA LÍNEA
+# O puedes ponerlo en otro lugar, ej: STATIC_ROOT = '/var/www/mi_proyecto/static/' en Linux
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media") # Asegúrate que esta esté correcta también
+MAS_IMAGE_UPLOAD_SUBDIR = "chat_images"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -162,11 +216,11 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    'LOGIN_FIELD': 'email',
+    'LOGIN_FIELD': 'username',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
-    'SEND_CONFIRMATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': False,
     'SET_USERNAME_RETYPE': True,
     'SET_PASSWORD_RETYPE': True,
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
@@ -176,7 +230,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': False,
     'PASSWORD_VALIDATORS': AUTH_PASSWORD_VALIDATORS,
     'PERMISSIONS': {
-        'user_create': ['apps.utils.permissions.IsSuperUser'],
+        'user_create': ['rest_framework.permissions.AllowAny'],
     },
 }
 MEDIA_URL = "/media/"
@@ -189,7 +243,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:5173',
-    "https://desing.netsy.ai",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -197,7 +250,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
-    "https://desing.netsy.ai",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+AUTH_USER_MODEL = 'utils.CustomUser'
