@@ -1,6 +1,4 @@
-¡Absolutamente! Aquí tienes un borrador completo para el `README.md` de tu proyecto de Django REST Framework (`tesis-drf-admin`). Este README está diseñado para ser informativo y cubrir todos los aspectos clave de tu backend.
 
-```markdown
 # 🤖💬 Tesis Backend: Sistema Multiagente Chat - Gestión y Proxy
 
 **Proyecto de Tesis: Backend Django REST Framework para la gestión de usuarios, chats, historial y proxy al servicio de IA multiagente (MAS).**
@@ -223,4 +221,4 @@ Los archivos generados por el servicio MAS (imágenes de gráficos) se guardan e
 
 *Este proyecto es parte de una tesis. Las contribuciones externas podrían ser consideradas pero deben alinearse con los objetivos académicos.*
 
-```
+
